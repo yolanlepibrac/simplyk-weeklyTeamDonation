@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes spin { 
+  0% { transform:rotate(0deg); opacity:0; }
+  30% { transform:rotate(5000deg); opacity:0; }
+  40% { transform:rotate(10000deg); opacity:0.2; }
+  50% { transform:rotate(1500deg); opacity:0.5; }
+  60% { transform:rotate(17000deg); opacity:1; }
+  70% { transform:rotate(17500deg); }
+  80% { transform:rotate(17800deg); }
+  90% { transform:rotate(17950deg); }
+  100% { transform:rotate(18000deg); }
+}
+
+
