@@ -61,7 +61,7 @@ export const RandomizatorPage : React.FunctionComponent = () => {
                 <Button variant="outlined" color='primary' onClick={() => setNewDonorOpen(prev => !prev)}>Add manually</Button>
             </Grid>
             <Drawer open={newDonorOpen} anchor="right"onClose={() => setNewDonorOpen(prev => !prev)} >
-                <AddManualDonor />
+                <AddManualDonor onClose={() => setNewDonorOpen(false)} />
             </Drawer>
         </Grid>
 

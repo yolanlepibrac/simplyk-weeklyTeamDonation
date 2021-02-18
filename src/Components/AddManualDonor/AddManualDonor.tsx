@@ -18,7 +18,11 @@ const validPassword = "Zidane"
 
 const simplykTeam = ["François", "Thibaut", "Myriam", 'Sam', "Yolan", 'Rowan', 'Florence', 'Lola']
 
-export const AddManualDonor : React.FunctionComponent = () => {
+interface ManualDonorProps {
+    onClose : () => void
+}
+
+export const AddManualDonor : React.FunctionComponent<ManualDonorProps> = ({onClose}) => {
 
     const classes = useStyles()
 
@@ -28,6 +32,7 @@ export const AddManualDonor : React.FunctionComponent = () => {
     const addDonorToList = () => {
         if(password === validPassword){
             console.log("add donor")
+            onClose()
         }
     }
 
