@@ -1,7 +1,9 @@
 
 import { Drawer, Grid, LinearProgress, makeStyles,} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import { resolve } from 'path';
 import React from 'react';
+import { FirebaseContext } from '../../firebase/firebaseContext';
 import { AddManualDonor } from '../AddManualDonor/AddManualDonor';
 import { LastDonorList } from '../LastDonorList/LastDonorList';
 
@@ -16,19 +18,40 @@ const useStyles = makeStyles(() => ({
 
 const LOADING_DURATION = 2000
 
+interface TeamDonor {firstName : string}
+
 export const RandomizatorPage : React.FunctionComponent = () => {
+
+    const { database } = React.useContext(FirebaseContext);
+
+    const addDonor = async () => {
+        await database?.collection("teamDonor").add({
+            firstName: "Ada",
+        })
+    }
+    const getTeamDonors = async () => {
+        const usersData = await database?.collection("teamDonor").get();
+        let users : TeamDonor[] = [];
+        usersData?.forEach((doc) => {
+            users.push(doc.data() as TeamDonor) 
+        });
+        console.log(users)
+
+    }
+
+    
 
     const [newDonorOpen, setNewDonorOpen] = React.useState(false)
     const classes = useStyles()
     const [donorIsDisplayed, setDonorIsDisplay] = React.useState(false)
     const [progressIsDisplayed, setProgressIsDisplay] = React.useState(false)
     
-    const addNewDonor = () => {
+    const addNewDonor = async () => {
         setDonorIsDisplay(false)
         setProgressIsDisplay(true)
         setProgress(0)
+        await getTeamDonors()
         setTimeout(() => {
-
             setProgressIsDisplay(false)
             setDonorIsDisplay(true)
         }, LOADING_DURATION)
