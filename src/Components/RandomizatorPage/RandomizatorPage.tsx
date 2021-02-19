@@ -28,6 +28,7 @@ export const RandomizatorPage : React.FunctionComponent = () => {
     const classes = useStyles()
     const [donorIsDisplayed, setDonorIsDisplay] = React.useState(false)
     const [progressIsDisplayed, setProgressIsDisplay] = React.useState(false)
+    const [crownIsDisplayed, setCrownIsDisplayed] = React.useState(false)
     const [todayDonor, setTodayDonor] = React.useState<TeamDonor | null>(null)
 
     const getRandomPerson = () => {
@@ -54,7 +55,13 @@ export const RandomizatorPage : React.FunctionComponent = () => {
         if(todayDonor){
             await saveLastDonor(database, todayDonor)
         }
-        setDonorIsDisplay(false)
+        setCrownIsDisplayed(true)
+        setTimeout(() => {
+            setDonorIsDisplay(false)
+            setCrownIsDisplayed(false)
+            setTodayDonor(null)
+        }, 1000)
+        
     }
 
 
