@@ -15,7 +15,7 @@ const config = {
 };
 
 
-export const FirebaseContext = React.createContext<{database : firebase.firestore.Firestore | null, teamDonors : TeamDonor[] | null, lastDonors : LastDonor[] | null}>({database :null, teamDonors:null, lastDonors :null })
+export const FirebaseContext = React.createContext<{database : firebase.firestore.Firestore | null, teamDonors : TeamDonor[] | null, lastDonors : LastDonor[] | null, refetchLastDonors:() => Promise<void>}>({database :null, teamDonors:null, lastDonors :null, refetchLastDonors : async () => {} })
 
 
 export const useFirebase = () => {
@@ -25,7 +25,7 @@ export const useFirebase = () => {
     if (!firebase.apps.length) {
         firebase.initializeApp(config);
     }else {
-        firebase.app(); // if already initialized, use that one
+        firebase.app();
     }
     const database = firebase.firestore();
 
@@ -39,5 +39,10 @@ export const useFirebase = () => {
         getAndSetDonor();
     }, [])
 
-    return {database, teamDonors, lastDonors}
+    const refetchLastDonors = async () => {
+        const lastDonors  = await getLastDonors(database)
+        setLastDonors(lastDonors)
+    }
+
+    return {database, teamDonors, lastDonors, refetchLastDonors}
 }

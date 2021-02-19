@@ -22,7 +22,7 @@ const LOADING_DURATION = 2000
 
 export const RandomizatorPage : React.FunctionComponent = () => {
 
-    const { database, teamDonors } = React.useContext(FirebaseContext);
+    const { database, teamDonors,refetchLastDonors } = React.useContext(FirebaseContext);
 
     const [newDonorOpen, setNewDonorOpen] = React.useState(false)
     const classes = useStyles()
@@ -56,6 +56,7 @@ export const RandomizatorPage : React.FunctionComponent = () => {
             await saveLastDonor(database, todayDonor)
         }
         setCrownIsDisplayed(true)
+        await refetchLastDonors()
         setTimeout(() => {
             setDonorIsDisplay(false)
             setCrownIsDisplayed(false)
