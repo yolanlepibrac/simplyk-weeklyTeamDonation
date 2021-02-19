@@ -7,11 +7,11 @@ import { FirebaseContext, useFirebase } from './firebase/firebaseContext';
 
 function App() {
 
-  const {database} = useFirebase()
+  const firebaseContext = useFirebase()
 
   return (
     <div className="App">
-      <FirebaseContext.Provider value={{database}}>
+      <FirebaseContext.Provider value={firebaseContext}>
         <RandomizatorPage/>
       </FirebaseContext.Provider>
     </div>

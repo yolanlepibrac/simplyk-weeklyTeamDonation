@@ -1,6 +1,7 @@
-import { Grid, MenuItem, Select, TextField, makeStyles } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
+import { Grid, MenuItem, Select, TextField, makeStyles, CircularProgress, Button } from '@material-ui/core';
 import React from 'react';
+import { saveLastDonor, TeamDonor } from '../../api/api';
+import { FirebaseContext } from '../../firebase/firebaseContext';
 
 const useStyles = makeStyles(() => ({
     image: {
@@ -24,15 +25,28 @@ interface ManualDonorProps {
 
 export const AddManualDonor : React.FunctionComponent<ManualDonorProps> = ({onClose}) => {
 
+    const { teamDonors, database } = React.useContext(FirebaseContext);
     const classes = useStyles()
 
-    const [selectedPerson, setSelectedPerson] = React.useState<string>(simplykTeam[0])
+    const [selectedPerson, setSelectedPerson] = React.useState<TeamDonor | null>(null)
+    const [loading, setLoading] = React.useState(false)
     const [password, setPassword] = React.useState<string>('')
     
-    const addDonorToList = () => {
-        if(password === validPassword){
-            console.log("add donor")
+    const addDonorToList =  async() => {
+        if(password === validPassword && selectedPerson){
+            setLoading(true)
+            await saveLastDonor(database, selectedPerson)
             onClose()
+            setLoading(false)
+        }
+    }
+
+    const handleSelectPerson = (id : string) => {
+        const selectedPerson = teamDonors?.find((person) => {
+            return person.id === id
+        })
+        if(selectedPerson){
+            setSelectedPerson(selectedPerson)
         }
     }
 
@@ -43,9 +57,9 @@ export const AddManualDonor : React.FunctionComponent<ManualDonorProps> = ({onCl
                 <div >Add the last Donor</div>
             </Grid>
             <Grid xs={12} className={classes.item}>
-                <Select value={selectedPerson} onChange={(e) => setSelectedPerson(e.target.value as string)} variant="outlined" fullWidth>
-                    {simplykTeam.map((person, index) => {
-                        return <MenuItem key={index} value={person}>{person}</MenuItem>
+                <Select value={selectedPerson} onChange={(e) => handleSelectPerson(e.target.value as string)} variant="outlined" fullWidth>
+                    {teamDonors && teamDonors.map((person, index) => {
+                        return <MenuItem key={index} value={person.id}>{person.firstName}</MenuItem>
                     })}
                 </Select>
             </Grid>
@@ -53,7 +67,13 @@ export const AddManualDonor : React.FunctionComponent<ManualDonorProps> = ({onCl
                 <TextField value={password} onChange={(e) => setPassword(e.target.value as string)} variant='outlined' fullWidth label='password'>Add</TextField>
             </Grid>
             <Grid xs={12} className={classes.item}>
-                <Button onClick={addDonorToList} fullWidth variant='contained' color="primary">Add</Button>
+                <Button 
+                startIcon={(loading && <CircularProgress size={16} />)} 
+                disabled={loading} 
+                onClick={addDonorToList} 
+                fullWidth 
+                variant='contained' 
+                color="primary">Add</Button>
             </Grid>
             
             

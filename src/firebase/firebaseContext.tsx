@@ -1,6 +1,7 @@
 import * as React from "react"
 import firebase from "firebase/app";
 import 'firebase/firestore'
+import { getLastDonors, getTeamDonors, LastDonor, TeamDonor } from "../api/api";
 
 
 const config = {
@@ -14,17 +15,29 @@ const config = {
 };
 
 
-export const FirebaseContext = React.createContext<{database : firebase.firestore.Firestore | null}>({database :null})
+export const FirebaseContext = React.createContext<{database : firebase.firestore.Firestore | null, teamDonors : TeamDonor[] | null, lastDonors : LastDonor[] | null}>({database :null, teamDonors:null, lastDonors :null })
 
 
 export const useFirebase = () => {
+    const [teamDonors, setTeamDonors] = React.useState<TeamDonor[] | null>(null)
+    const [lastDonors, setLastDonors] = React.useState<LastDonor[] | null>(null)
+
     if (!firebase.apps.length) {
         firebase.initializeApp(config);
     }else {
         firebase.app(); // if already initialized, use that one
     }
-
     const database = firebase.firestore();
 
-    return {database}
+    React.useEffect(() => {
+        async function getAndSetDonor() {
+            const teamDonors  = await getTeamDonors(database)
+            setTeamDonors(teamDonors)
+            const lastDonors  = await getLastDonors(database)
+            setLastDonors(lastDonors)
+        }    
+        getAndSetDonor();
+    }, [])
+
+    return {database, teamDonors, lastDonors}
 }
