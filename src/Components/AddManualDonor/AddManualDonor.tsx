@@ -25,7 +25,7 @@ interface ManualDonorProps {
 
 export const AddManualDonor : React.FunctionComponent<ManualDonorProps> = ({onClose}) => {
 
-    const { teamDonors, database } = React.useContext(FirebaseContext);
+    const { teamDonors, database, refetchLastDonors } = React.useContext(FirebaseContext);
     const classes = useStyles()
 
     const [selectedPerson, setSelectedPerson] = React.useState<TeamDonor | null>(null)
@@ -36,6 +36,7 @@ export const AddManualDonor : React.FunctionComponent<ManualDonorProps> = ({onCl
         if(password === validPassword && selectedPerson){
             setLoading(true)
             await saveLastDonor(database, selectedPerson)
+            await refetchLastDonors()
             onClose()
             setLoading(false)
         }

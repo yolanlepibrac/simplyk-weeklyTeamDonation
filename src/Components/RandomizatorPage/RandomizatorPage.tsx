@@ -52,11 +52,13 @@ export const RandomizatorPage : React.FunctionComponent = () => {
     }
 
     const validateNewDonor = async () => {
+        console.log(todayDonor)
         if(todayDonor){
             await saveLastDonor(database, todayDonor)
         }
         setCrownIsDisplayed(true)
         await refetchLastDonors()
+        console.log("refetch")
         setTimeout(() => {
             setDonorIsDisplay(false)
             setCrownIsDisplayed(false)

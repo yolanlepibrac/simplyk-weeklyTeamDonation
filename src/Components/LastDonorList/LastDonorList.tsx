@@ -20,8 +20,6 @@ export const LastDonorList : React.FunctionComponent = () => {
 
     const immuneDonors  = lastDonors?.filter((_item, index) => index >= lastDonors.length - 3)
     const notImmuneDonors  = lastDonors?.filter((_item, index) => index < lastDonors.length - 3).slice(-1 * 8)
-    console.log(lastDonors)
-    console.log(notImmuneDonors)
 
     const getUserName = (lastDonor: LastDonor) => {
         const teamDonor = getTeamDonorFromLastDonor(lastDonor, teamDonors);

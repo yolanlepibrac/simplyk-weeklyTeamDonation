@@ -1,8 +1,8 @@
 import firebase from "firebase/app";
 
-
+export interface firebaseDate {seconds : number}
 export interface TeamDonor {firstName : string, id:string}
-export interface LastDonor {teamDonorId : string, createdAt : Date}
+export interface LastDonor {teamDonorId : string, createdAt : Date | firebaseDate}
 
 
 export const addDonor = async (database : firebase.firestore.Firestore | null) => {
@@ -26,7 +26,7 @@ export const getLastDonors = async (database : firebase.firestore.Firestore | nu
     usersData?.forEach((doc) => {
         users.push(doc.data() as LastDonor) 
     });
-    return users.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+    return users.sort((a, b) => (a.createdAt as firebaseDate).seconds - (b.createdAt as firebaseDate).seconds)
 }
 
 export const saveLastDonor = async (database : firebase.firestore.Firestore | null, user : TeamDonor) => {
