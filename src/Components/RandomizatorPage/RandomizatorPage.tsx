@@ -6,6 +6,7 @@ import { saveLastDonor, getTeamDonors, TeamDonor } from '../../api/api';
 import { FirebaseContext } from '../../firebase/firebaseContext';
 import { AddManualDonor } from '../AddManualDonor/AddManualDonor';
 import { LastDonorList } from '../LastDonorList/LastDonorList';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const useStyles = makeStyles(() => ({
     image: {
@@ -121,6 +122,11 @@ export const RandomizatorPage : React.FunctionComponent = () => {
                 variant="contained" color='primary' 
                 startIcon={(validateLoading && <CircularProgress size={16} />)} 
                 onClick={validateNewDonor}>Valider</Button>
+                <Button 
+                disabled={progressIsDisplayed || animationRun || validateLoading} 
+                variant="contained" color='primary' 
+                style={{marginLeft:20}}
+                onClick={addNewDonor}><RefreshIcon  /></Button>
             </Grid>}
             <div  style={{ width:"100%", display:'flex', justifyContent:'center'}}>
                {donorIsDisplayed && <div style={{position:'relative'}}>
