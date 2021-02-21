@@ -15,11 +15,8 @@ const useStyles = makeStyles(() => ({
 
 export const LastDonorList : React.FunctionComponent = () => {
     
-    const { teamDonors, lastDonors } = React.useContext(FirebaseContext);
+    const { teamDonors, notImmuneDonors, immuneDonors } = React.useContext(FirebaseContext);
     const classes = useStyles()
-
-    const immuneDonors  = lastDonors?.filter((_item, index) => index >= lastDonors.length - 3)
-    const notImmuneDonors  = lastDonors?.filter((_item, index) => index < lastDonors.length - 3).slice(-1 * 8)
 
     const getUserName = (lastDonor: LastDonor) => {
         const teamDonor = getTeamDonorFromLastDonor(lastDonor, teamDonors);

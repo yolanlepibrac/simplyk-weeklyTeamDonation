@@ -23,7 +23,7 @@ const ROTATION_DURATION = 3000
 
 export const RandomizatorPage : React.FunctionComponent = () => {
 
-    const { database, teamDonors,refetchLastDonors } = React.useContext(FirebaseContext);
+    const { database, teamDonors,refetchLastDonors, immuneDonors } = React.useContext(FirebaseContext);
 
     const [newDonorOpen, setNewDonorOpen] = React.useState(false)
     const classes = useStyles()
@@ -38,9 +38,10 @@ export const RandomizatorPage : React.FunctionComponent = () => {
         if(!teamDonors){
             return
         }
-        const randomUser = Math.floor(Math.random() * (teamDonors.length));
+        const possibleDonor = teamDonors.filter((user) => !immuneDonors?.map(u => u.teamDonorId)?.includes(user.id))
+        const randomUser = Math.floor(Math.random() * (possibleDonor.length));
         console.log('random', randomUser)
-        return teamDonors[randomUser]
+        return possibleDonor[randomUser]
     }
     
     

@@ -14,8 +14,23 @@ const config = {
   databaseURL: "https://simplykweeklyteamdonation.firebaseio.com",
 };
 
+interface ContextProps {
+    database : firebase.firestore.Firestore | null, 
+    teamDonors : TeamDonor[] | null, 
+    lastDonors : LastDonor[] | null, refetchLastDonors:() => Promise<void>,  
+    immuneDonors : LastDonor[] | null, 
+    notImmuneDonors: LastDonor[] | null
+}
 
-export const FirebaseContext = React.createContext<{database : firebase.firestore.Firestore | null, teamDonors : TeamDonor[] | null, lastDonors : LastDonor[] | null, refetchLastDonors:() => Promise<void>}>({database :null, teamDonors:null, lastDonors :null, refetchLastDonors : async () => {} })
+export const FirebaseContext = React.createContext<ContextProps>({
+    database :null, 
+    teamDonors:null, 
+    lastDonors :null, 
+    refetchLastDonors : async () => {},
+    immuneDonors :null,
+    notImmuneDonors:null
+
+})
 
 
 export const useFirebase = () => {
@@ -44,5 +59,8 @@ export const useFirebase = () => {
         setLastDonors(lastDonors)
     }
 
-    return {database, teamDonors, lastDonors, refetchLastDonors}
+    const immuneDonors  = lastDonors?.filter((_item, index) => index >= lastDonors.length - 3) || null
+    const notImmuneDonors  = lastDonors?.filter((_item, index) => index < lastDonors.length - 3).slice(-1 * 8) ||  null
+
+    return {database, teamDonors, lastDonors, refetchLastDonors, immuneDonors, notImmuneDonors}
 }
