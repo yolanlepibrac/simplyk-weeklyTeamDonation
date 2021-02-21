@@ -1,5 +1,5 @@
 
-import { Drawer, Grid, LinearProgress, makeStyles,} from '@material-ui/core';
+import { CircularProgress, Drawer, Grid, LinearProgress, makeStyles,} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import React from 'react';
 import { saveLastDonor, getTeamDonors, TeamDonor } from '../../api/api';
@@ -17,6 +17,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const LOADING_DURATION = 2000
+const ROTATION_DURATION = 3000
 
 
 
@@ -30,12 +31,15 @@ export const RandomizatorPage : React.FunctionComponent = () => {
     const [progressIsDisplayed, setProgressIsDisplay] = React.useState(false)
     const [crownIsDisplayed, setCrownIsDisplayed] = React.useState(false)
     const [todayDonor, setTodayDonor] = React.useState<TeamDonor | null>(null)
+    const [animationRun, setAnimationRun] = React.useState(false)
+    const [validateLoading, setValidateLoading] = React.useState(false)
 
     const getRandomPerson = () => {
         if(!teamDonors){
             return
         }
-        const randomUser = Math.floor(Math.random() * teamDonors.length) + 1;
+        const randomUser = Math.floor(Math.random() * (teamDonors.length));
+        console.log('random', randomUser)
         return teamDonors[randomUser]
     }
     
@@ -48,21 +52,27 @@ export const RandomizatorPage : React.FunctionComponent = () => {
         setTimeout(() => {
             setProgressIsDisplay(false)
             setDonorIsDisplay(true)
+            setAnimationRun(true)
+            setTimeout(() => {
+                setAnimationRun(false)
+            }, ROTATION_DURATION)
         }, LOADING_DURATION)
+        
     }
 
     const validateNewDonor = async () => {
+        setValidateLoading(true)
         console.log(todayDonor)
         if(todayDonor){
             await saveLastDonor(database, todayDonor)
         }
         setCrownIsDisplayed(true)
         await refetchLastDonors()
-        console.log("refetch")
         setTimeout(() => {
             setDonorIsDisplay(false)
             setCrownIsDisplayed(false)
             setTodayDonor(null)
+            setValidateLoading(false)
         }, 1000)
         
     }
@@ -79,7 +89,7 @@ export const RandomizatorPage : React.FunctionComponent = () => {
         return () => {
           clearInterval(timer);
         };
-      }, []);
+    }, []);
 
   
 
@@ -103,14 +113,18 @@ export const RandomizatorPage : React.FunctionComponent = () => {
             <Grid item xs={12} style={{height:100}}>
                 <Button disabled={progressIsDisplayed} variant="contained" color='primary' onClick={addNewDonor}>Who give this week ?</Button>
             </Grid>}
-            {donorIsDisplayed && 
+            {donorIsDisplayed &&
             <Grid item xs={12} style={{height:100}}>
-                <Button disabled={progressIsDisplayed} variant="contained" color='primary' onClick={validateNewDonor}>Valider</Button>
+                <Button 
+                disabled={progressIsDisplayed || animationRun || validateLoading} 
+                variant="contained" color='primary' 
+                startIcon={(validateLoading && <CircularProgress size={16} />)} 
+                onClick={validateNewDonor}>Valider</Button>
             </Grid>}
             <div  style={{ width:"100%", display:'flex', justifyContent:'center'}}>
                {donorIsDisplayed && <div style={{position:'relative'}}>
                     <div className={classes.image}  style={{position:'absolute', top:0, left:-200}}>
-                        <img src={`./assets/images/${todayDonor?.id || "simplyk"}.png`} width="400" height='400' />
+                        <img src={`./assets/images/${todayDonor?.id || "simplyk"}.jpg`} width="400" height='400' />
                     </div>
                 </div>}
                 {progressIsDisplayed && 
